@@ -1,0 +1,25 @@
+#!/bin/bash
+
+NAME="djangochannels"
+DIR=/home/ubuntu/Channels-testing
+USER=ubuntu
+GROUP=ubuntu
+WORKERS=3
+BIND=unix:/home/ubuntu/run/gunicorn.sock
+DJANGO_SETTINGS_MODULE=djangochannels.settings
+DJANGO_WSGI_MODULE=djangochannels.wsgi
+LOG_LEVEL=error
+
+cd $DIR
+source ../shell/bin/activate
+
+export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+export PYTHONPATH=$DIR:$PYTHONPATH
+exec ../shell/bin/gunicorn ${DJANGO_WSGI_MODULE}:application \
+  --name $NAME \
+  --workers $WORKERS \
+  --user=$USER \
+  --group=$GROUP \
+  --bind=$BIND \
+  --log-level=$LOG_LEVEL \
+  --log-file=-
